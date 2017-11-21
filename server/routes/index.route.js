@@ -1,11 +1,14 @@
-import express from 'express';
-import userRoutes from './user.route';
-import authRoutes from './auth.route';
+// import express from 'express';
+// import userRoutes from './user.route';
+// import authRoutes from './auth.route';
+const express = require("express");
+const userRoutes = require("./user.route");
+const authRoutes = require("./auth.route");
 
 const router = express.Router(); // eslint-disable-line new-cap
 
 /** GET /health-check - Check service health */
-router.get('/health-check', (req, res) =>
+router.get('/api/health-check', (req, res) =>
   res.send('OK')
 );
 
@@ -15,4 +18,5 @@ router.use('/api/users', userRoutes);
 // mount auth routes at /auth
 router.use('/auth', authRoutes);
 
-export default router;
+// export default router;
+module.exports = router;

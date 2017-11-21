@@ -1,7 +1,12 @@
-import jwt from 'jsonwebtoken';
-import httpStatus from 'http-status';
-import APIError from '../helpers/APIError';
-import config from '../../config/config';
+// import jwt from 'jsonwebtoken';
+// import httpStatus from 'http-status';
+// import APIError from '../helpers/APIError';
+// import config from '../../config/config';
+
+const jwt = require("jsonwebtoken");
+const httpStatus = require("http-status");
+const APIError = require("../helpers/APIError");
+const config = require("../../config/config");
 
 // sample user, used for authentication
 const user = {
@@ -47,4 +52,4 @@ function getRandomNumber(req, res) {
   });
 }
 
-export default { login, getRandomNumber };
+module.exports = { login, getRandomNumber };

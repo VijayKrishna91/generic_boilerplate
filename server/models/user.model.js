@@ -1,7 +1,11 @@
-import Promise from 'bluebird';
-import mongoose from 'mongoose';
-import httpStatus from 'http-status';
-import APIError from '../helpers/APIError';
+// import Promise from 'bluebird';
+// import mongoose from 'mongoose';
+// import httpStatus from 'http-status';
+// import APIError from '../helpers/APIError';
+Promise = require("bluebird");
+const mongoose = require("mongoose");
+const httpStatus = require("http-status");
+const APIError = require("../helpers/APIError");
 
 /**
  * User Schema
@@ -15,12 +19,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
-});
+}, {timestamps: true});
 
 /**
  * Add your
@@ -74,4 +74,5 @@ UserSchema.statics = {
 /**
  * @typedef User
  */
-export default mongoose.model('User', UserSchema);
+// export default UserSchema;
+module.exports = {UserSchema};
