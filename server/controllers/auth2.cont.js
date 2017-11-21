@@ -43,6 +43,9 @@ const strategy = new Strategy(params, function(payload, done) {
     return next();
  }
  function login(req,res,next){
+     req.user = {
+         username:req.body.username
+     };
      return next();
  }
  

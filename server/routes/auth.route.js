@@ -19,8 +19,8 @@ const authCtrl2 = require("../controllers/auth2.cont");
 const router = express.Router(); // eslint-disable-line new-cap
 
 /** POST /auth/login - Returns token if correct username and password is provided */
-router.route('/login')
-  .post(validate(paramValidation.login), authCtrl.login);
+// router.route('/login')
+//   .post(validate(paramValidation.login), authCtrl.login);
 
 /** GET /auth/random-number - Protected route,
  * needs token returned by the above as header. Authorization: Bearer {token} */
@@ -28,10 +28,11 @@ router.route('/random-number')
   .get(expressJwt({ secret: config.jwtSecret }), authCtrl.getRandomNumber);
 
 
-router.route("/login2")
+router.route("/login")
   .post(validate(paramValidation.login), authCtrl2.login, authCtrl2.generateToken, (req,res,next)=>{
     console.log(req);
     console.log("anything");
+    return res.json(req.user);
   });
 // export default router;
 module.exports = router;
