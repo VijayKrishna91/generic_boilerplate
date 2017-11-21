@@ -1,20 +1,4 @@
-// import express from 'express';
-// import logger from 'morgan';
-// import bodyParser from 'body-parser';
-// import cookieParser from 'cookie-parser';
-// import compress from 'compression';
-// import methodOverride from 'method-override';
-// import cors from 'cors';
-// import httpStatus from 'http-status';
-// import expressWinston from 'express-winston';
-// import expressValidation from 'express-validation';
-// import helmet from 'helmet';
-// import winstonInstance from './winston';
-// import routes from '../server/routes/index.route';
-// import config from './config';
-// import APIError from '../server/helpers/APIError';
-// import { reach } from '../../../../../../Library/Caches/typescript/2.6/node_modules/@types/joi';
-
+'use strict';
 
 const express = require("express");
 const logger = require("morgan");
@@ -31,6 +15,8 @@ const winstonInstance = require("./winston");
 const routes = require("../server/routes/index.route");
 const config = require("./config");
 const APIError = require("../server/helpers/APIError");
+const auth = require("./auth");
+
 
 
 
@@ -55,6 +41,9 @@ app.use(helmet());
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
+// Passport Initialize
+// app.use(auth.initialize());
+
 // enable detailed API logging in dev env
 if (config.env === 'development') {
   expressWinston.requestWhitelist.push('body');
@@ -69,6 +58,7 @@ if (config.env === 'development') {
 
 // mount all routes on /api path
 app.use('/', routes);
+
 
 // if error is not an instanceOf APIError, convert it.
 app.use((err, req, res, next) => {
@@ -101,7 +91,7 @@ if (config.env !== 'test') {
 app.use((err, req, res, next) => // eslint-disable-line no-unused-vars
   res.status(err.status).json({
     message: err.isPublic ? err.message : httpStatus[err.status],
-    stack: config.env === 'development' ? err.stack : {}
+    stack: config.env === 'development' ? err.stack : undefined
   })
 );
 

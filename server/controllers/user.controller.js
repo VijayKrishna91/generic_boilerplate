@@ -1,4 +1,5 @@
-// import User from '../models/user.model';
+'use strict';
+
 const User = require("../models/index").User;
 
 /**

@@ -1,3 +1,5 @@
+'use strict';
+
 const Joi = require("joi");
 
 module.exports =  {
@@ -23,7 +25,7 @@ module.exports =  {
   // POST /auth/login
   login: {
     body: {
-      username: Joi.string().required(),
+      email: Joi.string().required(),
       password: Joi.string().required()
     }
   }

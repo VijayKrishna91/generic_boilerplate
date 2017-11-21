@@ -1,4 +1,5 @@
-// import winston from 'winston';
+'use strict';
+
 const winston = require("winston");
 
 const logger = new (winston.Logger)({

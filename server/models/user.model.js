@@ -1,7 +1,5 @@
-// import Promise from 'bluebird';
-// import mongoose from 'mongoose';
-// import httpStatus from 'http-status';
-// import APIError from '../helpers/APIError';
+'use strict';
+
 Promise = require("bluebird");
 const mongoose = require("mongoose");
 const httpStatus = require("http-status");
@@ -11,16 +9,91 @@ const APIError = require("../helpers/APIError");
  * User Schema
  */
 const UserSchema = new mongoose.Schema({
-  username: {
+  name: {
     type: String,
-    required: true
+    lowercase: true
   },
-  mobileNumber: {
+  phone: {
     type: String,
+    unique: "Phone ({VALUE}) is already registered with another user.",
+    sparse: true,
+    // required:[true,'Phone is required']
+    validate: {
+      validator: function (v) {
+        var flag;
+        if (v == null || v == "") { return true; }
+        else {
+          return /^(\+91-|\+91|0)?\d{10}$/.test(v);
+        }
+      },
+      message: '{VALUE} is not a valid Phone. for ex- 9852110871(10 Digit)'
+    }
+  },
+  email: {
+    type: String,
+    unique: "Email ({VALUE}) is already registered with another user.",
     required: true,
-    match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
+    sparse: true,
+    lowercase: true,
+    validate: {
+      validator: function (v) {
+        var flag;
+        if (v == null || v == "") { return true; }
+        else {
+          var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return re.test(v);
+        }
+      },
+      message: '{VALUE} is not a valid Email. for ex- someone@domain.com'
+    }
+  },
+  password: {
+    type: String,
+    select: false
+  },
+  gender: {
+    type: String,
+    lowercase: true,
+    required: false,
+    default: null
+  },
+  forgot_password_otp: {
+    otp: {
+      type: String
+    },
+    created: {
+      type: Date
+    }
+  },
+  is_verified: {
+    type: Boolean
+  },
+  profilePicture: {
+    type: String
+  },
+  google_access_token: {
+    type: String
+  },
+  google_refresh_token: {
+    type: String
+  },
+  google_id_token: {
+    type: String
+  },
+  profiles: {
+    type:{
+      facebook: String,
+      google: String
+    },
+    default:{}
+  },
+  random_key: {
+    // Actually
+    type: String,
+    default: null,
+    select: false
   }
-}, {timestamps: true});
+}, { timestamps: true });
 
 /**
  * Add your
@@ -75,4 +148,4 @@ UserSchema.statics = {
  * @typedef User
  */
 // export default UserSchema;
-module.exports = {UserSchema};
+module.exports = { UserSchema };

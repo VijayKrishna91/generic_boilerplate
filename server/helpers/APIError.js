@@ -1,4 +1,5 @@
-// import httpStatus from 'http-status';
+'use strict';
+
 const httpStatus = require("http-status");
 
 /**

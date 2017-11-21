@@ -9,12 +9,12 @@ chai.config.includeStack = true;
 
 describe('## Auth APIs', () => {
   const validUserCredentials = {
-    username: 'react',
+    username: 'react2',
     password: 'express'
   };
 
   const invalidUserCredentials = {
-    username: 'react',
+    username: 'react2',
     password: 'IDontKnow'
   };
 

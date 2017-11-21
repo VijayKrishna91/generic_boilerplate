@@ -1,55 +1,85 @@
-// import jwt from 'jsonwebtoken';
-// import httpStatus from 'http-status';
-// import APIError from '../helpers/APIError';
-// import config from '../../config/config';
+'use strict';
 
 const jwt = require("jsonwebtoken");
 const httpStatus = require("http-status");
 const APIError = require("../helpers/APIError");
 const config = require("../../config/config");
+const auth = require("../../config/auth");
+const TokenService = require("../../config/Tokenservice");
+const Tools = require("../helpers/Tools");
 
-// sample user, used for authentication
-const user = {
-  username: 'react',
-  password: 'express'
-};
+module.exports = { normalLogin, generateToken, registerUser };
 
-/**
- * Returns jwt token if valid username and password is provided
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
-function login(req, res, next) {
-  // Ideally you'll fetch this from the db
-  // Idea here was to show how jwt works with simplicity
-  if (req.body.username === user.username && req.body.password === user.password) {
-    const token = jwt.sign({
-      username: user.username
-    }, config.jwtSecret);
-    return res.json({
-      token,
-      username: user.username
-    });
-  }
+function generateToken(req, res, next) {
 
-  const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
-  return next(err);
+  TokenService.createToken({ user: req.user, expireTime: 86400 }, (err, token) => {
+    if (err) return next({status:httpStatus.UNAUTHORIZED, message:err.message || "Unknown error"});
+
+    req.generatedToken = token;
+    next();
+  })
+
 }
 
-/**
- * This is a protected route. Will return random number only if jwt token is provided in header.
- * @param req
- * @param res
- * @returns {*}
- */
-function getRandomNumber(req, res) {
-  // req.user is assigned by jwt middleware if valid token is provided
-  return res.json({
-    user: req.user,
-    num: Math.random() * 100
+function normalLogin(req, res, next) {
+  if (!req.body.email) {
+    return next({ status: httpStatus.BAD_REQUEST, message: 'Invalid Email' });
+  }
+  const options = {
+    email: req.body.email.toLowerCase(),
+    password: req.body.password,
+    notification_id: req.body.notification_id
+  }
+  auth.normalAuthenticateion(options).then(user => {
+    req.user = user;
+    next();
+
+  }).catch(err => {
+    return next({ status: httpStatus.UNAUTHORIZED, message: err.message || "Unknown error", isPublic: true });
   });
 }
 
-module.exports = { login, getRandomNumber };
+function registerUser(req, res, next) {
+  if ((!req.body.email && !req.body.phone) || !req.body.password) {
+      return next({ status: 400, message: "Invalid Email or Phone" });
+  }
+
+  var userObj = {
+      email: req.body.email ? req.body.email.toLowerCase() : null,
+      password: req.body.password,
+      phone: req.body.phone,
+      name: req.body.name,
+      otp: req.body.otp
+  }
+  // console.log(req);
+  // Validating uniqueness of phone and mobile no. 
+  auth.userAlreadyExists(userObj.email, userObj.phone).then(exist=> {
+      if (exist) {
+          return next({message:"Email or phone already exist", isPublic: true, status: httpStatus.UNAUTHORIZED});
+      }
+      else {
+          
+          auth.createUser(userObj).then(user => {
+              req.user = { email: user.email, _id: user._id, name: user.name, phone: user.phone };
+              return next();
+
+          }).catch(err => {
+              if (err.name && err.name == 'ValidationError') {
+                  let errMsg = Tools.getValidationErrMsg(err.errors);
+                  return next({status: httpStatus.UNAUTHORIZED, message: errMsg, isPublic: true});
+              }
+              else {
+                  // console.log(err);
+                  return next({status: httpStatus.INTERNAL_SERVER_ERROR, message: err.message});
+              }
+
+          });
+
+      }
+  }).catch(err=>{
+    return next();
+  })
+}
+
+
+
