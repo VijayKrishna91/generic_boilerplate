@@ -1,8 +1,3 @@
-// import jwt from 'jsonwebtoken';
-// import httpStatus from 'http-status';
-// import APIError from '../helpers/APIError';
-// import config from '../../config/config';
-
 const jwt = require("jsonwebtoken");
 const httpStatus = require("http-status");
 const APIError = require("../helpers/APIError");

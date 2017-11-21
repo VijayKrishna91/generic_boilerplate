@@ -11,22 +11,11 @@
     "yarn": ">=0.20.3"
   },
   "scripts": {
-
-    "start":"node index",
-    "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
-    "build": "gulp",
+    "start": "node index",
     "lint": "esw *.js server config --color",
-    "lint:watch": "yarn lint -- --watch",
-    "precommit": "yarn lint && yarn test",
     "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
-    "test:watch": "yarn test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
-    "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
     "report-coverage": "coveralls < ./coverage/lcov.info"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:KunalKapadia/express-mongoose-es6-rest-api.git"
   },
   "keywords": [
     "express",
@@ -60,8 +49,8 @@
     "method-override": "^2.3.5",
     "mongoose": "4.7.4",
     "morgan": "1.7.0",
-    "passport": "false0.4.0",
-    "passport-jwt": "false3.0.1",
+    "passport": "0.4.0",
+    "passport-jwt": "3.0.1",
     "winston": "2.3.0"
   },
   "devDependencies": {

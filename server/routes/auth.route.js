@@ -1,11 +1,3 @@
-// import express from 'express';
-// import validate from 'express-validation';
-// import expressJwt from 'express-jwt';
-// import paramValidation from '../../config/param-validation';
-// import authCtrl from '../controllers/auth.controller';
-// import config from '../../config/config';
-// import authCtrl2 from "../controllers/auth2.cont";
-
 const express = require("express");
 const validate = require("express-validation");
 const expressJwt = require("express-jwt");
